@@ -3,8 +3,8 @@
 
 
 void Game::print_board(){
-    for (int i = 0; i < 3; ++i){
-        for (int j = 0; j < 3; ++j){
+    for (int i = 0; i < num_sides; ++i){
+        for (int j = 0; j < num_sides; ++j){
             std::cout<<board[i][j]<< " ";
         }
         puts("\n");
@@ -12,7 +12,7 @@ void Game::print_board(){
 }
 
 bool Game::enter_position(Move& move){
-    if (move.row < 3 && move.col < 3 && board[move.row][move.col] == '_'){
+    if (move.row < num_sides && move.col < num_sides && board[move.row][move.col] == '_'){
         board[move.row][move.col] = player;
         return true;
     }
@@ -20,8 +20,8 @@ bool Game::enter_position(Move& move){
 }
 
 bool Game::check_win(){
-    for (int i = 0; i < 3; ++i){
-        for (int j = 0; j < 3; ++j){
+    for (int i = 0; i < num_sides; ++i){
+        for (int j = 0; j < num_sides; ++j){
             std::cout<<board[i][j]<< " ";
         }
         puts("\n");
@@ -30,8 +30,8 @@ bool Game::check_win(){
 }
 
 bool Game::can_move(){
-    for (int i = 0; i < 3; ++i){
-        for (int j = 0; j < 3; ++j){
+    for (int i = 0; i < num_sides; ++i){
+        for (int j = 0; j < num_sides; ++j){
             if (board[i][j] == '_'){
                 return true;
             }
@@ -49,9 +49,9 @@ Move Game::find_best_move(){
     // Traverse all cells, evaluate minimax function for
     // all empty cells. And return the cell with optimal
     // value.
-    for (int i = 0; i<3; i++)
+    for (int i = 0; i<num_sides; i++)
     {
-        for (int j = 0; j<3; j++)
+        for (int j = 0; j<num_sides; j++)
         {
             // Check if cell is empty
             if (board[i][j]=='_')
@@ -95,9 +95,9 @@ int Game::minimax(int depth, bool isMax){
     if (isMax)
     {
         int best = -1000;
-        for (int i = 0; i<3; i++)
+        for (int i = 0; i<num_sides; i++)
         {
-            for (int j = 0; j<3; j++)
+            for (int j = 0; j<num_sides; j++)
             {
                 if (board[i][j]=='_')
                 {
@@ -112,9 +112,9 @@ int Game::minimax(int depth, bool isMax){
     else
     {
         int best = 1000;
-        for (int i = 0; i<3; i++)
+        for (int i = 0; i<num_sides; i++)
         {
-            for (int j = 0; j<3; j++)
+            for (int j = 0; j<num_sides; j++)
             {
                 if (board[i][j]=='_')
                 {
@@ -128,50 +128,49 @@ int Game::minimax(int depth, bool isMax){
     }
 }
 
-int Game::evaluate()
-{
-    // Checking for Rows for X or O victory.
-    for (int row = 0; row<3; row++)
-    {
-        if (board[row][0]==board[row][1] &&
-            board[row][1]==board[row][2])
-        {
-            if (board[row][0]==cpu)
-                return +10;
-            else if (board[row][0]==player)
-                return -10;
+
+GameState Game::get_state() {
+    // rows
+    for (int i = 0; i < 3; i++) {
+        if (board[i][0] != '_' &&
+            board[i][0] == board[i][1] &&
+            board[i][1] == board[i][2]) {
+            return (board[i][0] == cpu) ? GameState::CPU_WIN : GameState::PLAYER_WIN;
         }
     }
-    // Checking for Columns for X or O victory.
-    for (int col = 0; col<3; col++)
-    {
-        if (board[0][col]==board[1][col] &&
-            board[1][col]==board[2][col])
-        {
-            if (board[0][col]==cpu)
-                return +10;
 
-            else if (board[0][col]==player)
-                return -10;
+    // cols
+    for (int j = 0; j < 3; j++) {
+        if (board[0][j] != '_' &&
+            board[0][j] == board[1][j] &&
+            board[1][j] == board[2][j]) {
+            return (board[0][j] == cpu) ? GameState::CPU_WIN : GameState::PLAYER_WIN;
         }
     }
-    // Checking for Diagonals for X or O victory.
-    if (board[0][0]==board[1][1] && board[1][1]==board[2][2])
-    {
-        if (board[0][0]==cpu)
-            return +10;
-        else if (board[0][0]==player)
-            return -10;
+
+    // diagonals
+    if (board[0][0] != '_' &&
+        board[0][0] == board[1][1] &&
+        board[1][1] == board[2][2]) {
+        return (board[0][0] == cpu) ? GameState::CPU_WIN : GameState::PLAYER_WIN;
     }
 
-    if (board[0][2]==board[1][1] && board[1][1]==board[2][0])
-    {
-        if (board[0][2]==cpu)
-            return +10;
-        else if (board[0][2]==player)
-            return -10;
+    if (board[0][2] != '_' &&
+        board[0][2] == board[1][1] &&
+        board[1][1] == board[2][0]) {
+        return (board[0][2] == cpu) ? GameState::CPU_WIN : GameState::PLAYER_WIN;
     }
-    // Else if none of them have won then return 0
+
+    if (!can_move()) return GameState::TIE;
+
+    return GameState::ONGOING;
+}
+
+int Game::evaluate() {
+    GameState state = get_state();
+
+    if (state == GameState::CPU_WIN) return 10;
+    if (state == GameState::PLAYER_WIN) return -10;
     return 0;
 }
 

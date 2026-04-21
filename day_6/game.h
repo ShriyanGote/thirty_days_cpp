@@ -7,7 +7,16 @@
 typedef struct {
     int row;
     int col;
-}Move;
+} Move;
+
+static constexpr int num_sides = 3;
+
+enum class GameState {
+    PLAYER_WIN,
+    CPU_WIN,
+    TIE,
+    ONGOING
+};
 
 class Game {
     public:
@@ -29,6 +38,7 @@ class Game {
         bool cpu_move();
     private:
         bool check_win();
+        GameState get_state();
         bool can_move();
         // minimax algorithm
         int evaluate();
