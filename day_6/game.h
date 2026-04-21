@@ -36,9 +36,9 @@ class Game {
         void print_board();
         bool enter_position(Move& move);
         bool cpu_move();
+        GameState get_state();
     private:
         bool check_win();
-        GameState get_state();
         bool can_move();
         // minimax algorithm
         int evaluate();

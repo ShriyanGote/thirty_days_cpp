@@ -18,13 +18,18 @@ int main(){
         if (!board.enter_position(move)){
             std::cout<< "Try again!\n";
         };
+        auto state = board.get_state();
+        if (state != GameState::ONGOING) break;
         std::cout<< "Good move! CPU is playing...\n";
         std::this_thread::sleep_for(std::chrono::seconds(1));
         board.print_board();
         if (!board.cpu_move()){
             return 0;
         }
+        state = board.get_state();
+        if (state != GameState::ONGOING) break;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+    board.print_board();
     return 0;
 }
