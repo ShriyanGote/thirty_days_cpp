@@ -1,0 +1,17 @@
+# Compiled binaries
+*.o
+*.out
+*.exe
+
+# Specific binaries (no extension)
+day_1/bc
+day_2/pg
+day_3/tc
+day_4/pc
+day_4/sw
+day_5/d
+day_6/ai
+day_6/game
+
+# macOS
+.DS_Store
