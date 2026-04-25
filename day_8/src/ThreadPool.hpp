@@ -55,7 +55,11 @@ class ThreadPool{
             }
         };
         void enqueue(std::function<void()> task){
-            
+            {
+                std::unique_lock<std::mutex> lock(_mtx);
+                _tasks.push(std::move(task));
+            }
+            _cv.notify_one();
         };
 
 };
