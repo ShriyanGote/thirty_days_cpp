@@ -3,7 +3,7 @@ import random, datetime
 levels = ["INFO", "WARN", "ERROR", "DEBUG"]
 messages = ["user login", "db query", "cache miss", "request timeout", "payment processed"]
 
-for i in range(4):
+for i in range(500):
     with open(f"logs/file_{i}.log", "w") as f:
         t = datetime.datetime(2024, 1, 15, 0, 0, 0)
         for _ in range(10000):

@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <random>
@@ -28,6 +29,9 @@ class MetricStore{
         };
         Metrics snapshot(){
             std::lock_guard<std::mutex> lock(mtx);
+            if (_entries.empty()) {
+                return Metrics{};
+            }
             std::vector<int> latencies{};
             double error_count{};
             for (size_t x{}; x < _entries.size(); ++x){
@@ -41,8 +45,8 @@ class MetricStore{
             _metrics.total_entries = latency_size;
             _metrics.error_rate = (double)error_count / latency_size * 100.0;
             _metrics.avg_latency = std::accumulate(latencies.begin(), latencies.end(), 0.0) / latency_size;
-            _metrics.p50_latency = latencies[latency_size * 0.5];
-            _metrics.p95_latency = latencies[latency_size * 0.95];
+            _metrics.p50_latency = latencies[(size_t)(latency_size * 0.5)];
+            _metrics.p95_latency = latencies[(size_t)(latency_size * 0.95)];
 
             return _metrics;
         }
