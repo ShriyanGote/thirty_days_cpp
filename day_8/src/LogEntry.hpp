@@ -46,6 +46,12 @@ class LogEntry{
             return *this;
         }// move asgn
         //&& indicates an RVALUE (temporary object)
+        int get_latency(){
+            return _latency;
+        }
+        log_type get_type(){
+            return _type;
+        }
     private:
         std::string _operation{};
         std::string _timestamp{};
